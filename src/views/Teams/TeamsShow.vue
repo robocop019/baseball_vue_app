@@ -3,11 +3,14 @@
     <h1> {{team.name}} </h1>
 
     <h3> Record: {{team.wins}} - {{team.losses}} - {{team.ties}} </h3>
-
+    
     <h4>Roster</h4>
-    <ul v-for='player in team.players'>
-      <li> {{player.name}} </li>
-    </ul>
+    
+    <div class="card" style="width: 18rem;">
+      <ul class="list-group list-group-flush" v-for='player in team.players'>
+        <li class="list-group-item"> {{player.name}} </li>
+      </ul>
+    </div> <!-- end .card -->
 
   </div> <!-- end .teams-show -->
 </template>
@@ -15,6 +18,11 @@
 <style>
   li {
     list-style: none;
+  }
+
+  .card {
+    text-align: center;
+    margin: auto;
   }
 </style>
 
