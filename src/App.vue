@@ -16,10 +16,6 @@
             <router-link class="nav-link" to="/about">About</router-link>
           </li>
 
-          <li>
-            <router-link class="nav-link" to='/teams'>Teams</router-link>    
-          </li>
-
           <li class="nav-item dropdown">
 
             <router-link class="nav-link dropdown-toggle" to='#' id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Teams</router-link>    

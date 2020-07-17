@@ -1,12 +1,14 @@
 <template>
   <div class="teams-index">
-    <h1>Central League</h1>
-    <div v-for="team in teams">
-      <router-link :to="'/teams/' + team.id"> 
-        <h3> {{team.name}} </h3> 
-      </router-link>
-    </div>
-  </div>
+    <div class="container">
+      <h1>Central League</h1>
+      <div v-for="team in teams">
+        <router-link :to="'/teams/' + team.id"> 
+          <h3> {{team.name}} </h3> 
+        </router-link>
+      </div>
+    </div> <!-- end .container -->
+  </div> <!-- end .teams-index -->
 </template>
 
 <style>
