@@ -19,6 +19,18 @@
           <li>
             <router-link class="nav-link" to='/teams'>Teams</router-link>    
           </li>
+
+          <li class="nav-item dropdown">
+
+            <router-link class="nav-link dropdown-toggle" to='#' id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Teams</router-link>    
+
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <router-link class="dropdown-item" to="#">American League</router-link>
+              <router-link class="dropdown-item" to="#">National League</router-link>
+              <router-link class="dropdown-item" to='/teams'>Central League</router-link>
+            </div>
+
+          </li>
           
           <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Players</a>
