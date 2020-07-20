@@ -58,27 +58,27 @@
 
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">POS</th>
-              <th scope="col">AB</th>
-              <th scope="col">H</th>
-              <th scope="col">2B</th>
-              <th scope="col">3B</th>
-              <th scope="col">HR</th>
-              <th scope="col">R</th>
-              <th scope="col">RBI</th>
-              <th scope="col">BB</th>
-              <th scope="col">HBP</th>
-              <th scope="col">SB</th>
-              <th scope="col">AVG</th>
-              <th scope="col">OBP</th>
-              <th scope="col">SLG</th>
+              <th v-on:click="setHittingSortAttribute('number')" scope="col">#</th>
+              <th  v-on:click="setHittingSortAttribute('name')" scope="col">Name</th>
+              <th v-on:click="setHittingSortAttribute('position')" scope="col">POS</th>
+              <th v-on:click="setHittingSortAttribute('at_bats')" scope="col">AB</th>
+              <th v-on:click="setHittingSortAttribute('hits')" scope="col">H</th>
+              <th v-on:click="setHittingSortAttribute('doubles')" scope="col">2B</th>
+              <th v-on:click="setHittingSortAttribute('triples')" scope="col">3B</th>
+              <th v-on:click="setHittingSortAttribute('home_runs')" scope="col">HR</th>
+              <th v-on:click="setHittingSortAttribute('runs')" scope="col">R</th>
+              <th v-on:click="setHittingSortAttribute('rbis')" scope="col">RBI</th>
+              <th v-on:click="setHittingSortAttribute('walks')" scope="col">BB</th>
+              <th v-on:click="setHittingSortAttribute('hbp')" scope="col">HBP</th>
+              <th v-on:click="setHittingSortAttribute('stolen_bases')" scope="col">SB</th>
+              <th v-on:click="setHittingSortAttribute('avg')" scope="col">AVG</th>
+              <th v-on:click="setHittingSortAttribute('obp')" scope="col">OBP</th>
+              <th v-on:click="setHittingSortAttribute('slg')" scope="col">SLG</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for='player in players'>
+            <tr v-for='player in sortedPlayers'>
               <th scope="row"> {{player.number}} </th>
               <td> {{player.name}} </td>
               <td> {{player.position}} </td>
@@ -109,24 +109,24 @@
 
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">APP</th>
-              <th scope="col">GS</th>
-              <th scope="col">W</th>
-              <th scope="col">L</th>
-              <th scope="col">S</th>
-              <th scope="col">IP</th>
-              <th scope="col">H</th>
-              <th scope="col">R</th>
-              <th scope="col">ER</th>
-              <th scope="col">K</th>
-              <th scope="col">BB</th>
+              <th v-on:click="setPitchingSortAttribute('number')" scope="col">#</th>
+              <th v-on:click="setPitchingSortAttribute('name')" scope="col">Name</th>
+              <th v-on:click="setPitchingSortAttribute('appearances')" scope="col">APP</th>
+              <th v-on:click="setPitchingSortAttribute('starts')" scope="col">GS</th>
+              <th v-on:click="setPitchingSortAttribute('wins')" scope="col">W</th>
+              <th v-on:click="setPitchingSortAttribute('losses')" scope="col">L</th>
+              <th v-on:click="setPitchingSortAttribute('saves')" scope="col">S</th>
+              <th v-on:click="setPitchingSortAttribute('innings')" scope="col">IP</th>
+              <th v-on:click="setPitchingSortAttribute('hits')" scope="col">H</th>
+              <th v-on:click="setPitchingSortAttribute('runs')" scope="col">R</th>
+              <th v-on:click="setPitchingSortAttribute('earned_runs')" scope="col">ER</th>
+              <th v-on:click="setPitchingSortAttribute('strikeouts')" scope="col">K</th>
+              <th v-on:click="setPitchingSortAttribute('walks')" scope="col">BB</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for='pitcher in pitchers'>
+            <tr v-for='pitcher in sortedPitchers'>
               <th scope="row"> {{pitcher.number}} </th>
               <td> {{pitcher.name}} </td>
               <td> {{pitcher.pitching_stats.appearances}} </td>
@@ -164,7 +164,11 @@
         division: '',
         teams: [],
         players: [],
-        pitchers: []
+        pitchers: [],
+        currentHitSort: 'avg',
+        currentPitchSort: 'appearances',
+        currentHitSortDir: -1,
+        currentPitchSortDir: -1
       };
     },
     created: function() {
@@ -187,6 +191,64 @@
         this.pitchers = response.data;
       });
     },
-    methods: {}
+    methods: {
+      setHittingSortAttribute: function(inputAttribute) {
+
+        if (this.currentHitSort === inputAttribute) {
+          this.currentHitSortDir *= -1;
+        } else {
+          this.currentHitSort = inputAttribute;
+          this.currentHitSortDir = -1;
+        }
+      },
+
+      setPitchingSortAttribute: function(inputAttribute) {
+        if (this.currentPitchSort === inputAttribute) {
+          this.currentPitchSortDir *= -1;
+        } else {
+          this.currentPitchSort = inputAttribute;
+          this.currentPitchSortDir = -1;
+        }
+      }
+    },
+
+  computed: {
+    sortedPlayers: function() {
+
+      return this.players.sort((a,b) => {
+        let modifier = 1;
+        if(this.currentHitSortDir === -1) modifier = -1;
+
+        console.log(this.currentHitSort);
+
+        if(this.currentHitSort === 'number'  || this.currentHitSort ===  'name' || this.currentHitSort ===  'position') {
+          if(a[this.currentHitSort] < b[this.currentHitSort]) return -1 * modifier;
+          if(a[this.currentHitSort] > b[this.currentHitSort]) return 1 * modifier;
+          return 0;
+        } else {
+          if(a.hitting_stats[this.currentHitSort] < b.hitting_stats[this.currentHitSort]) return -1 * modifier;
+          if(a.hitting_stats[this.currentHitSort] > b.hitting_stats[this.currentHitSort]) return 1 * modifier;
+          return 0;
+        }
+      });
+    },
+
+    sortedPitchers: function() {
+      return this.pitchers.sort((a,b) => {
+        let modifier = 1;
+        if(this.currentPitchSortDir === -1) modifier = -1;
+
+        if(this.currentPitchSort === 'number'  || this.currentPitchSort ===  'name') {
+          if(a[this.currentPitchSort] < b[this.currentPitchSort]) return -1 * modifier;
+          if(a[this.currentPitchSort] > b[this.currentPitchSort]) return 1 * modifier;
+          return 0;
+        } else {
+          if(a.pitching_stats[this.currentPitchSort] < b.pitching_stats[this.currentPitchSort]) return -1 * modifier;
+          if(a.pitching_stats[this.currentPitchSort] > b.pitching_stats[this.currentPitchSort]) return 1 * modifier;
+          return 0;
+        }
+      });
+    }
   }
+}
 </script>
