@@ -38,12 +38,12 @@
             </thead>
 
             <tbody>
-              <tr v-for='team in teams'>
+              <tr v-for='team in sortedTeams'>
                 <td> {{team.name}} </td>
                 <td> {{team.wins}} </td>
                 <td> {{team.losses}} </td>
                 <td> {{team.ties}} </td>
-                <td> GBS </td>
+                <td> {{teams[0].differential - team.differential}} </td>
               </tr>
             </tbody>
           </table>
@@ -111,10 +111,11 @@
             <tr>
               <th v-on:click="setPitchingSortAttribute('number')" scope="col">#</th>
               <th v-on:click="setPitchingSortAttribute('name')" scope="col">Name</th>
-              <th v-on:click="setPitchingSortAttribute('appearances')" scope="col">APP</th>
-              <th v-on:click="setPitchingSortAttribute('starts')" scope="col">GS</th>
               <th v-on:click="setPitchingSortAttribute('wins')" scope="col">W</th>
               <th v-on:click="setPitchingSortAttribute('losses')" scope="col">L</th>
+              <th v-on:click="setPitchingSortAttribute('era')" scope="col">ERA</th>
+              <th v-on:click="setPitchingSortAttribute('appearances')" scope="col">APP</th>
+              <th v-on:click="setPitchingSortAttribute('starts')" scope="col">GS</th>
               <th v-on:click="setPitchingSortAttribute('saves')" scope="col">S</th>
               <th v-on:click="setPitchingSortAttribute('innings')" scope="col">IP</th>
               <th v-on:click="setPitchingSortAttribute('hits')" scope="col">H</th>
@@ -129,17 +130,18 @@
             <tr v-for='pitcher in sortedPitchers'>
               <th scope="row"> {{pitcher.number}} </th>
               <td> {{pitcher.name}} </td>
-              <td> {{pitcher.pitching_stats.appearances}} </td>
-              <td> {{pitcher.pitching_stats.starts}} </td>
               <td> {{pitcher.pitching_stats.wins}} </td>
               <td> {{pitcher.pitching_stats.losses}} </td>
+              <td> {{pitcher.pitching_stats.era}} </td>
+              <td> {{pitcher.pitching_stats.appearances}} </td>
+              <td> {{pitcher.pitching_stats.starts}} </td>
               <td> {{pitcher.pitching_stats.saves}} </td>
               <td> {{pitcher.pitching_stats.innings}} </td>
               <td> {{pitcher.pitching_stats.hits}} </td>
               <td> {{pitcher.pitching_stats.runs}} </td>
               <td> {{pitcher.pitching_stats.earned_runs}} </td>
-              <td> {{pitcher.pitching_stats.strikeouts}} </td>
               <td> {{pitcher.pitching_stats.walks}} </td>
+              <td> {{pitcher.pitching_stats.strikeouts}} </td>
             </tr>
           </tbody>
         </table>
@@ -213,13 +215,30 @@
     },
 
   computed: {
+    sortedTeams: function() {
+
+      return this.teams.sort(compare)
+
+      function compare(a, b) {
+        const teamA = a.differential
+        const teamB = b.differential
+
+        let comparison = 0
+        
+        if (teamA < teamB) {
+          comparison = 1
+        } else if (teamB < teamA) {
+          comparison = -1
+        }
+        return comparison
+      }
+    },
+
     sortedPlayers: function() {
 
       return this.players.sort((a,b) => {
         let modifier = 1;
         if(this.currentHitSortDir === -1) modifier = -1;
-
-        console.log(this.currentHitSort);
 
         if(this.currentHitSort === 'number'  || this.currentHitSort ===  'name' || this.currentHitSort ===  'position') {
           if(a[this.currentHitSort] < b[this.currentHitSort]) return -1 * modifier;
